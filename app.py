@@ -112,7 +112,7 @@ try:
         button_logIn.click()
         wait_a_lot()
         # DESCER TELA 
-        go_down_screen(500)
+        go_down_screen(150)
         # LOCALIZAR BOTÃO DE SPAM
         spam = driver.find_elements(By.XPATH, '//div[@class="sidebar__label"]')[3]
         wait_a_little()
