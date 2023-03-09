@@ -44,6 +44,11 @@ def get_data(type):
         if check in ('yes','y'):
             return information
 
+def get_user_information():
+    email_user = get_data('email address')
+    password_user = get_data('password')
+    save_data(email_user, password_user)
+
 def save_data(data1, data2):
     with open(user_data, 'w', encoding='utf-8', newline='') as arquivo:
         arquivo.write(f'{data1}{os.linesep}')
@@ -56,7 +61,7 @@ def read_data():
             data.append(linha)
         email, password = data
         email = email[:len(email) - 1]
-        password = password[:len(password) - 1]
+        password = password[len(password) - 1]
         return email, password
 
 def go_down_screen(value):
@@ -64,10 +69,12 @@ def go_down_screen(value):
 
 user_data = 'assets\\user_data.txt'
 if getsize(user_data) == 0:
-    email_user = get_data('email address')
-    password_user = get_data('password')
-    save_data(email_user, password_user)
+    get_user_information()
 
+new_user = input('Would you like to sign in with another account? Yes [y] - No [n]').lower().strip()
+if new_user in ('yes', 'y'):
+    get_user_information()
+    
 email, password = read_data()
 
 # 1: ABRIR O NAVEGADOR
