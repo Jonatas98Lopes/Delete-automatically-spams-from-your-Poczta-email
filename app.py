@@ -59,6 +59,7 @@ def read_data():
     with open(user_data, 'r', encoding='utf-8') as arquivo:
         for linha in arquivo:
             data.append(linha)
+        data[0] = data[0].split("\n")[0]
         return data
 
 def go_down_screen(value):
@@ -72,8 +73,7 @@ new_user = input('Would you like to sign in with another account? Yes [y] - No [
 if new_user in ('yes', 'y'):
     get_user_information()
     
-user_name, password = read_data()
-email = user_name.split("\n")[0]
+email, password = read_data()
 # 1: ABRIR O NAVEGADOR
 driver = start_driver()
 wait_a_little()
@@ -139,28 +139,25 @@ try:
             # 16: SE O BOTÃO ESTIVER CLICÁVEL, EXCLUIR EMAILS. CASO CONTRÁRIO, EXIBIR MENSAGEM 'THERE'S NO SPAMS NOW.'
             exclude_button.click()
             wait_a_little()
+            confirmation = driver.find_element(By.XPATH, '//button[@class="Button Button--cta"]')
+            wait_a_little()
+            confirmation.click()
+            wait_a_little()
             # 11: LOCALIZAR O BOTÃO 'SPAM'
             bin = driver.find_elements(By.XPATH, '//div[@class="sidebar__label"]')[0]
-            # //span[@ng-if="LabelsController.resource.elementsById[5].count"]
             wait_a_little()
+            # //span[@ng-if="LabelsController.resource.elementsById[5].count"]
             # 12: CLICAR NO BOTÃO 'SPAM'
             bin.click()
             wait_a_little()
             # DESCER A BARRA DO NAVEGADOR
             go_down_screen(500)
             # 13: ACHAR BARRA DE SELEÇAO DE TODOS OS SPAMS
-            selector = driver.find_elements(By.XPATH, '//div[@class="Checkbox"]')[0]
-            wait_a_little()
             # 14: CLICAR NA BARRA DE SELEÇÃO
             selector.click()
             wait_a_little()
             # 15: ENCONTRAR O BOTÃO EXCLUIR
-            exclude_button = driver.find_elements(By.XPATH, '//button[@class="Button Button--secondary"]')[0]
-            wait_a_little()
-            # 16: SE O BOTÃO ESTIVER CLICÁVEL, EXCLUIR EMAILS. CASO CONTRÁRIO, EXIBIR MENSAGEM 'THERE'S NO SPAMS NOW.'
             exclude_button.click()
-            wait_a_little()
-            confirmation = driver.find_element(By.XPATH, '//button[@class="Button Button--cta"]')
             wait_a_little()
             confirmation.click()
             print("\nSpams has been deleted successfully.\n")
