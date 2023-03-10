@@ -38,7 +38,7 @@ def wait_a_lot():
 
 def get_data(type):
     while True:
-        information = input(f'What is your {type}? ')
+        information = input(f'What is your {type}? ').strip()
         print(f'\nCheck {type}: {information}\n')
         check = input(f'Your {type} is correct? Yes - [y] | No [n]: ').lower().strip()
         if check in ('yes','y'):
@@ -59,10 +59,7 @@ def read_data():
     with open(user_data, 'r', encoding='utf-8') as arquivo:
         for linha in arquivo:
             data.append(linha)
-        email, password = data
-        email = email[:len(email) - 1]
-        password = password[len(password) - 1]
-        return email, password
+        return data
 
 def go_down_screen(value):
     driver.execute_script(f'window.scrollTo(0,{str(value)})')
@@ -75,8 +72,8 @@ new_user = input('Would you like to sign in with another account? Yes [y] - No [
 if new_user in ('yes', 'y'):
     get_user_information()
     
-email, password = read_data()
-
+user_name, password = read_data()
+email = user_name.split("\n")[0]
 # 1: ABRIR O NAVEGADOR
 driver = start_driver()
 wait_a_little()
