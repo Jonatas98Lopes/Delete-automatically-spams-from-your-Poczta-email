@@ -1,5 +1,4 @@
 # ELIMINANDO SPAMS DO EMAIL:
-#!usr/bin/env python
 from genericpath import getsize
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service as ChromeService
@@ -12,7 +11,7 @@ import os
 
 def start_driver():
     chrome_settings = Options()
-    arguments = ['--lang=pl', '--window-size=1000, 1300','--incognito']
+    arguments = ['--lang=pl', '--window-size=1000, 1300','--incognito','headless']
     for argument in arguments:
         chrome_settings.add_argument(argument)
     chrome_settings.add_experimental_option('prefs',{
@@ -66,22 +65,27 @@ def go_down_screen(value):
     driver.execute_script(f'window.scrollTo(0,{str(value)})')
 
 user_data = 'assets\\user_data.txt'
+# 1 VERIFICAR SE O ARQUIVO "user_data.txt" ESTÁ VAZIO. SE SIM, OBTER CREDENCIAIS DE ACESSO DO USUÁRIO 
 if getsize(user_data) == 0:
+    #  SE SIM, OBTER CREDENCIAIS DE ACESSO DO USUÁRIO E SALVÁ-LAS NO "user_data.txt"
     get_user_information()
 
-new_user = input('Would you like to sign in with another account? Yes [y] - No [n]').lower().strip()
+# 2 PERGUNTE SE O USUÁRIO QUER TROCAR DE CONTA.
+new_user = input('Would you like to sign in with another account? Yes [y] - No [n] ').lower().strip()
 if new_user in ('yes', 'y'):
+    # SE SIM, OBTER AS NOVAS CREDENCIAIS DE ACESSO E SALVÁ-LAS NO "user_data.txt"
     get_user_information()
-    
+
+# 3 LER OS DADOS DE ACESSO DO USUÁRIO
 email, password = read_data()
-# 1: ABRIR O NAVEGADOR
+# 4: ABRIR O NAVEGADOR
 driver = start_driver()
 wait_a_little()
 try:
-    # 2: ACESSAR O SITE 'https://poczta.wp.pl/login/login.html'
+    # 5: ACESSAR O SITE 'https://poczta.wp.pl/login/login.html'
     driver.get('https://poczta.wp.pl/login/login.html')
     wait_a_little()
-    # PASSANDO NOTIFICAÇÕES
+    # 6: CASO O BOTÃO DE NOTIFICAÇÕES APAREÇA, CLICAR NELE. DO CONTRÁRIO, IGNORE-O.
     try:
         notifications = driver.find_element(By.XPATH, '//button[text()="AKCEPTUJĘ I PRZECHODZĘ DO SERWISU"]')
         wait_a_little()
@@ -89,82 +93,74 @@ try:
         notifications.click()
         wait_a_little()
     except:
-        print('Notification button not identified.')
+        pass
     finally:
-        # 3: LOCALIZAR CAMPO DE EMAIL
+        # 7: LOCALIZAR CAMPO DE EMAIL
         email_bar = driver.find_element(By.ID,'login')
         wait_a_little()
-        # 4: CLICAR NO CAMPO EMAIL
+        # 8: CLICAR NO CAMPO EMAIL
         email_bar.click()
         wait_a_little()
-        # 5: DIGITAR EMAIL NO CAMPO DE EMAIL
+        # 9: DIGITAR EMAIL NO CAMPO DE EMAIL
         type_naturally(email, email_bar)
         wait_a_little()
-        # 6: LOCALIZAR O CAMPO DE SENHA
+        # 10: LOCALIZAR O CAMPO DE SENHA
         password_bar = driver.find_element(By.ID,'password')
         wait_a_little()
-        # 7: CLICAR NO CAMPO SENHA
+        # 11: CLICAR NO CAMPO SENHA
         password_bar.click()
         wait_a_little()
-        # 8: DIGITAR SENHA
+        # 12: DIGITAR SENHA
         type_naturally(password, password_bar)
         wait_a_little()
-        # 9: LOCALIZAR CAMPO 'CONECTE-SE'
+        # 13: LOCALIZAR CAMPO DE LOGIN
         button_logIn = driver.find_element(By.XPATH,"//button[@type='submit']")
         wait_a_little()
-        # 10: CLICAR NO BOTÃO 'CONECTE-SE'
+        # 14: CLICAR NO BOTÃO DE LOGIN
         button_logIn.click()
         wait_a_lot()
-        # DESCER TELA 
+        # 15: DESCER A TELA 150px
         go_down_screen(150)
-        # LOCALIZAR BOTÃO DE SPAM
+        # 16: LOCALIZAR BOTÃO DE SPAM
         spam = driver.find_elements(By.XPATH, '//div[@class="sidebar__label"]')[3]
         wait_a_little()
-        # CLICAR NO BOTÃO SPAM
+        # 17: CLICAR NO BOTÃO DE SPAM
         spam.click()
         wait_a_little()
-        # DESCER TELA 
+        # 18: DESCER A TELA 500px
         go_down_screen(500)
         wait_a_little()
         try:
-            # 13: ACHAR BARRA DE SELEÇAO DE TODOS OS SPAMS
+            # 19: ACHAR ÍCONE DE SELEÇÃO DE TODOS OS SPAMS
             selector = driver.find_elements(By.XPATH, '//div[@class="Checkbox"]')[0]
             wait_a_little()
-            # 14: CLICAR NA BARRA DE SELEÇÃO
+            # 20: CLICAR NO ÍCONE DE SELEÇÃO DE TODOS OS SPAMS
             selector.click()
             wait_a_little()
-            # 15: ENCONTRAR O BOTÃO EXCLUIR
+            # 21: ENCONTRAR O BOTÃO EXCLUIR
             exclude_button = driver.find_elements(By.XPATH, '//button[@class="Button Button--secondary"]')[0]
             wait_a_little()
-            # 16: SE O BOTÃO ESTIVER CLICÁVEL, EXCLUIR EMAILS. CASO CONTRÁRIO, EXIBIR MENSAGEM 'THERE'S NO SPAMS NOW.'
+            # 22: CLICAR NO BOTÃO EXCLUIR
             exclude_button.click()
             wait_a_little()
+            # 23: LOCALIZAR BOTÃO DE CONFIRMAÇÃO DE EXCLUSÃO
             confirmation = driver.find_element(By.XPATH, '//button[@class="Button Button--cta"]')
             wait_a_little()
+            # 24: CLICAR NA CONFIRMAÇÃO DE EXCLUSÃO
             confirmation.click()
             wait_a_little()
-            # 11: LOCALIZAR O BOTÃO 'SPAM'
-            bin = driver.find_elements(By.XPATH, '//div[@class="sidebar__label"]')[0]
-            wait_a_little()
-            # //span[@ng-if="LabelsController.resource.elementsById[5].count"]
-            # 12: CLICAR NO BOTÃO 'SPAM'
-            bin.click()
-            wait_a_little()
-            # DESCER A BARRA DO NAVEGADOR
-            go_down_screen(500)
-            # 13: ACHAR BARRA DE SELEÇAO DE TODOS OS SPAMS
-            # 14: CLICAR NA BARRA DE SELEÇÃO
-            selector.click()
-            wait_a_little()
-            # 15: ENCONTRAR O BOTÃO EXCLUIR
-            exclude_button.click()
-            wait_a_little()
-            confirmation.click()
+            # 25: FECHAR JANELA DO NAVEGADOR
+            driver.close()
+            # 26: IMPRIMIR MENSAGEM: "Os spams foram deletados com sucesso."
             print("\nSpams has been deleted successfully.\n")
+        # ?: CASO HAJA UM ERRO NESSE PROCESSO, SIGNIFICA QUE NAO HÁ SPAMS"
         except:
+            # ??: NESTE CASO, IMPRIMIR MENSAGEM: "Não há spams agora. Por favor, tente mais tarde."
             print("\nThere are no spams now. Please, try it again later.\n")
+# !: SE POR ACASO, OS BUTÕES NÃO FOREM LOCALIZADOS, O SITE DEVE TER SIDO ATUALIZADO.
 except:
+        # !: NESTE CASO, INFORMAR O USUÁRIO PARA QUE ELE NOTIFIQUE O DESENVOLVEDOR.
         print('We could not delete the spams on your account. The website is likely', end=" ")
         print(' to have been updated. Please, reach out to the developer for new updates too.\n')
+        # 31: FECHAR JANELA DO NAVEGADOR
         driver.close()
-    
