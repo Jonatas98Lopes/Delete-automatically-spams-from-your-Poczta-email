@@ -11,7 +11,7 @@ import os
 
 def start_driver():
     chrome_settings = Options()
-    arguments = ['--lang=pl', '--window-size=1000, 1300','--incognito','headless']
+    arguments = ['--lang=pl', '--window-size=1000, 1300','--incognito','--headless']
     for argument in arguments:
         chrome_settings.add_argument(argument)
     chrome_settings.add_experimental_option('prefs',{
@@ -44,7 +44,7 @@ def get_data(type):
             return information
 
 def get_user_information():
-    email_user = get_data('email address')
+    email_user = get_data('Poczta email address')
     password_user = get_data('password')
     save_data(email_user, password_user)
 
@@ -71,7 +71,7 @@ if getsize(user_data) == 0:
     get_user_information()
 
 # 2 PERGUNTE SE O USUÁRIO QUER TROCAR DE CONTA.
-new_user = input('Would you like to sign in with another account? Yes [y] - No [n] ').lower().strip()
+new_user = input('Would you like to sign in with another account? Yes [y] - No [n]: ').lower().strip()
 if new_user in ('yes', 'y'):
     # SE SIM, OBTER AS NOVAS CREDENCIAIS DE ACESSO E SALVÁ-LAS NO "user_data.txt"
     get_user_information()
